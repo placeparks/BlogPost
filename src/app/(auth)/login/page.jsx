@@ -1,7 +1,5 @@
 import { LockClosedIcon } from '@heroicons/react/solid'
 import { handleLoginWithGithub, handleLoginWithGoogle } from '@/lib/action';
-import {signIn } from '@/app/api/auth/[...nextauth]/route';
-
 
 export default function Login() {
 

@@ -6,7 +6,7 @@ import { useSession, signOut } from 'next-auth/react';
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session } = useSession();
-
+console.log(session)
   const handleLogout = async () => {
     await signOut();
   };
@@ -71,7 +71,7 @@ function Navbar() {
                   Blog
                 </Link>
               </li>
-              {session?.user.isAdmin && (
+              {session && session.user.isAdmin && (
                 <li>
                   <Link href="/admin" className={`block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 ${isActive('/admin') ? 'text-blue-700' : 'text-gray-900 md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500'}`}>
                     Admin

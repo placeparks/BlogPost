@@ -30,6 +30,7 @@ async function handleGitHubSignIn(profile, accessToken) {
         username: profile.login,
         email: uniqueId,
         image: profile.avatar_url,
+        isAdmin: false,
       });
       await newUser.save();
     }
@@ -50,6 +51,7 @@ async function handleGitHubSignIn(profile, accessToken) {
           username: profile.name,
           email: profile.email,
           image: profile.picture,
+          isAdmin: false,
         });
         await newUser.save();
       }
@@ -76,10 +78,34 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         }),
     ],
 
-    callbacks: {
+  callbacks: {
+    async jwt({ token, user, account }) {
+      await connectToMongo();
+      // Check if it's a sign-in event
+      if (account && user) {
+        let userEmail = user.email;
+        // If the sign-in is from GitHub, construct the unique email ID
+        if (account.provider === "github") {
+          userEmail = `github-${user.id}`;
+        }
+  
+        // Fetch the user from the database using the determined email or unique identifier
+        const dbUser = await User.findOne({ email: userEmail }).lean();
+        // Set isAdmin from the database record
+        token.isAdmin = dbUser?.isAdmin ?? false;
+      }
+  
+      return token;
+    },
+    
+    async session({ session, token }) {
+      // Transfer isAdmin to the session
+      session.user.isAdmin = token.isAdmin;
+    
+      return session;
+    },
         async signIn({ user, account, profile }) {
           await connectToMongo();
-      
           if (account.provider === "github") {
             return handleGitHubSignIn(profile, account.accessToken);
           } else if (account.provider === "google") {
@@ -87,21 +113,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
           }
       
           return false; 
-        },
-        
-        async session({ session, token }) {
-            session.user.isAdmin = token.isAdmin;
-            
-            return session;
-          },
-        async jwt({ token, user }) {
-          if (user) {
-            token.uid = user.id; 
-            token.isAdmin = user.isAdmin;
-          }
-      
-          return token;
-        },
+        },     
       
       },
       

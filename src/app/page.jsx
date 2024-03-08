@@ -5,8 +5,8 @@ const Home = () => {
   return (
     <div className='mt-10'>
       <section className="bg-zinc-400 dark:bg-gray-900 min-h-screen">
-        <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
-          <div className="mr-auto place-self-center lg:col-span-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16">
+          <div className="lg:col-span-6 place-self-center">
             <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white mt-20">Mirac.eth Blog</h1>
             <p className="max-w-2xl mb-6 font-light text-gray-600 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">Dive into a world of insights, stories, and ideas.<br/>Join us on a journey of discovery and inspiration.</p>
             <a href="#" className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
@@ -17,13 +17,13 @@ const Home = () => {
               Contact Us
             </a>
           </div>
-          <div className="lg:col-span-5">
-            <div className="relative lg:w-[130%] lg:h-[170%] w-full h-64 lg:h-auto"> 
+          <div className="lg:col-span-6">
+            <div className="relative w-full h-64 lg:h-[500px]">
               <Image
                 src="/bg.webp"
                 alt="mockup"
                 layout="fill"
-                objectFit="contain" 
+                objectFit="contain"
               />
             </div>
           </div>
@@ -32,4 +32,7 @@ const Home = () => {
     </div>
   );
 };
+
 export default Home;
+
+
