@@ -1,9 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { Post } from "./models";
+import { Post, User } from "./models";
 import { connectToMongo } from "./utils";
 import { signIn } from "@/app/api/auth/[...nextauth]/route";
+import bcrypt from 'bcrypt';
 
 
 export const addPost = async (prevState,formData) => {
@@ -62,3 +63,48 @@ export const handleLoginWithGithub = async () => {
 export const handleLoginWithGoogle = async () => {
   await signIn("google")
 }
+
+export const handleRegister = async (formData) => {
+  if (!(formData instanceof FormData && typeof formData.entries === 'function')) {
+    console.error('Invalid formData');
+    return { error: 'Invalid form data' };
+  }
+
+  const formObject = Object.fromEntries(formData);
+  const { username, email, password, passwordRepeat } = formObject;
+  if (password !== passwordRepeat) {
+    return { error: "Passwords do not match" };
+  }
+
+  try {
+    await connectToMongo();
+
+    const user = await User.findOne({ username });
+
+    if (user) {
+      return { error: "Username already exists" };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+    return { message: "User registered successfully" };
+  } catch (error) {
+    console.error(error);
+    return { error: "Something went wrong!" };
+  }
+};
+
+
+
+
+
+
+
+

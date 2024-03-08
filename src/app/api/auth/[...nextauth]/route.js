@@ -3,8 +3,28 @@ import { connectToMongo } from "@/lib/utils";
 import NextAuth from "next-auth"
 import GitHub from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from 'bcrypt';
 
-      
+const login = async (credentials) => {
+  try {
+    connectToMongo();
+    const user = await User.findOne({ username: credentials.username });
+
+    if (!user) throw new Error("Wrong credentials!");
+
+    const isPasswordCorrect = credentials.password === user.password;
+
+    if (!isPasswordCorrect) throw new Error("Wrong credentials!");
+
+    return user;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to login!");
+  }
+};
+
+
 async function handleGitHubSignIn(profile, accessToken) {
   const res = await fetch("https://api.github.com/user/emails", {
     headers: {
@@ -64,7 +84,6 @@ async function handleGitHubSignIn(profile, accessToken) {
   }
 
 export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
-    
     providers: [
         GitHub({
             clientId: process.env.GITHUB_ID,
@@ -76,8 +95,37 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         }),
-    ],
-
+        CredentialsProvider({
+          credentials: {
+            email: { label: "Email", type: "text" },
+            password: { label: "Password", type: "password" }
+          },
+          async authorize(credentials, req) {
+            console.log('Credentials:', credentials);
+            await connectToMongo();
+            const user = await User.findOne({ email: credentials.email });
+            console.log('User:', user);
+          
+            if (!user) {
+              console.log('No user found');
+              return null;
+            }
+          
+            const passwordCorrect = await bcrypt.compare(credentials.password, user.password);
+            console.log('Password correct:', passwordCorrect);
+          
+            if (passwordCorrect) {
+              return { id: user._id, name: user.username, email: user.email };
+            }
+          
+            console.log('Password incorrect');
+            return null;
+          }
+          
+        }),
+        
+        
+      ],
   callbacks: {
     async jwt({ token, user, account }) {
       await connectToMongo();
@@ -112,7 +160,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
             return handleGoogleSignIn(profile);
           }
       
-          return false; 
+          return true; 
         },     
       
       },
