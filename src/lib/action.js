@@ -7,14 +7,16 @@ import { signIn } from "@/app/api/auth/[...nextauth]/route";
 import bcrypt from 'bcrypt';
 
 
-export const addPost = async (prevState,formData) => {
+export const addPost = async (prevState, formData) => {
   if (!formData) {
     console.error("formData is undefined");
     return { error: "No form data provided" };
   }
+
   const { title, body, slug, userId, img } = Object.fromEntries(Array.from(formData.entries()));
+
   try {
-    connectToMongo();
+    await connectToMongo();
     const newPost = new Post({
       title,
       body,
@@ -24,11 +26,14 @@ export const addPost = async (prevState,formData) => {
     });
 
     await newPost.save();
-    console.log("saved to db");
+    console.log("Saved to DB");
     revalidatePath("/blog");
     revalidatePath("/admin");
+    // Return a success message if everything goes well
+    return { message: "Post added successfully" };
   } catch (err) {
     console.log(err);
+    // Return an error object if something goes wrong
     return { error: "Something went wrong!" };
   }
 };
@@ -39,15 +44,16 @@ export const deletePost = async ({ id }) => {
     console.error("ID is undefined");
     return { error: "No ID provided for deletion" };
   }
+
   try {
     await connectToMongo();
     const deletedPost = await Post.findByIdAndDelete(id);
+
     if (!deletedPost) {
       return { error: "No post found with this ID" };
     }
+
     console.log("Post deleted from database");
-    revalidatePath("/blog");
-    revalidatePath("/admin");
     return { message: "Post deleted successfully" };
   } catch (err) {
     console.log(err);
@@ -55,6 +61,53 @@ export const deletePost = async ({ id }) => {
   }
 };
 
+
+
+export const addUser = async (prevState,formData) => {
+  if (!formData) {
+    console.error("formData is undefined");
+    return { error: "No form data provided" };
+  }
+  const { username, email, password, img } = Object.fromEntries(Array.from(formData.entries()));
+  try {
+    connectToMongo();
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      img,
+    });
+
+    await newUser.save();
+    console.log("saved to db");
+    revalidatePath("/admin");
+  } catch (err) {
+    console.log(err);
+    return { error: "Something went wrong!" };
+  }
+};
+
+
+export const deleteUser = async ({ id }) => {
+  if (!id) {
+    console.error("ID is undefined");
+    return { error: "No ID provided for deletion" };
+  }
+  try {
+    await connectToMongo();
+    await Post.deleteMany({userId: id});
+    await User.findByIdAndDelete(id);
+
+    console.log("User deleted from database");
+    revalidatePath("/admin");
+    return { message: "User deleted successfully" };
+  } catch (err) {
+    console.log(err);
+    return { error: "Something went wrong!" };
+  }
+};
 
 export const handleLoginWithGithub = async () => {
   await signIn("github")
@@ -100,9 +153,6 @@ export const handleRegister = async (formData) => {
     return { error: "Something went wrong!" };
   }
 };
-
-
-
 
 
 

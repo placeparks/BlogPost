@@ -67,7 +67,7 @@ const SinglePostPage = async ({ params }) => {
 </div>
 
   </div>
-  <p>{post.body}</p>
+  <div dangerouslySetInnerHTML={{ __html: post.body }}></div>
 </div>
 
               <div className="mb-12 lg:mb-0">

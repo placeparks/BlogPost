@@ -1,29 +1,17 @@
 import { getUser } from "@/lib/data";
 
-// FETCH DATA WITH AN API
-// const getData = async (userId) => {
-//   const res = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}` ,{cache:"no-store"});
-
-//   if (!res.ok) {
-//     throw new Error("Something went wrong");
-//   }
-
-//   return res.json();
-// };
-
 const PostUser = async ({ userId }) => {
-  // FETCH DATA WITH AN API
-  // const user = await getData(userId);
+  let userContent;
 
-  // FETCH DATA WITHOUT AN API
-  const user = await getUser(userId);
+  try {
+    const user = await getUser(userId);
+    userContent = <p className="text-lg font-semibold">{user.username}</p>;
+  } catch (error) {
+    console.error(error);
+    userContent = <p>Failed to load user details.</p>;
+  }
 
-  return (
-    <div>
-          <p className="text-lg font-semibold">{user?.username}</p>
-          
-</div>
-  );
+  return <div>{userContent}</div>;
 };
 
 export default PostUser;

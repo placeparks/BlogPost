@@ -6,7 +6,7 @@ import { useSession, signOut } from 'next-auth/react';
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session } = useSession();
-console.log(session)
+
   const handleLogout = async () => {
     await signOut();
   };

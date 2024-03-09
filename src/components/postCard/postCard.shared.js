@@ -1,10 +1,15 @@
 "use client"
-import React from "react"
-import Image from "next/image"
-import { BackgroundGradient } from "../ui/background-gradient"
+import React from "react";
+import Image from "next/image";
+import { BackgroundGradient } from "../ui/background-gradient";
 import Link from "next/link";
 
 const PostCard = ({ post }) => {
+  const handleReadMoreClick = (event) => {
+    event.preventDefault(); // Prevent the default link behavior
+    window.location.href = `/blog/${post.slug}`; // Set the location to the post URL
+  };
+
   return (
     <div className="w-full sm:w-1/4 p-2">
       <BackgroundGradient className="rounded-[22px]" containerClassName="h-full flex">
@@ -25,8 +30,9 @@ const PostCard = ({ post }) => {
             </div>
           </div>
           <div className="mt-4">
+            {/* Add the onClick event handler to the link */}
             <Link href={`/blog/${post.slug}`}>
-              <span>Read More</span>
+              <span onClick={handleReadMoreClick}>Read More</span>
             </Link>
           </div>
         </div>

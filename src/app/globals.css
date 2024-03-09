@@ -12,3 +12,12 @@ body {
     font-family: 'Roboto', sans-serif;
   }
   
+  /* Assuming calsans is a directory containing your font files */
+@font-face {
+    font-family: 'Calsans';
+    src: url('/fonts/calsans/calsans-regular.woff2') format('woff2'),
+         url('/fonts/calsans/calsans-regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+  }
+  

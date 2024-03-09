@@ -36,14 +36,15 @@ const SideBar = ({ onPanelSelect }) => {
             </a>
             <a
               className="flex items-center space-x-2 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white mb-6"
-              href="#"
+              onClick={() => onPanelSelect('addUser')}
+
             >
               <FiUsers className="w-6 h-6" />
-              <span>Users</span>
+              <span>Add Users</span>
             </a>
             <a
               className="flex items-center space-x-2 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
-              href="#"
+href='/getPosts'
             >
               <FiList className="w-6 h-6" />
               <span>Posts</span>

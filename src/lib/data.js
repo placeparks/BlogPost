@@ -1,11 +1,11 @@
 import { connectToMongo } from "./utils";
 import { Post, User } from "./models";
-
+import mongoose from "mongoose";
     
 export const getPost = async (slug) => {
-    await connectToMongo();
     try {
-        const post = await Post.findOne({ slug }).lean();
+        await connectToMongo();
+const post = await Post.findOne({ slug }).lean();
         return post;
     } catch (error) {
         throw new Error("Failed to fetch post!");
@@ -14,12 +14,22 @@ export const getPost = async (slug) => {
 
 
 export const getUser = async (id) => {
+    await connectToMongo();
+    let user;
     try {
-        await connectToMongo();
-        const user = await User.findById(id).lean();
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            user = await User.findById(id).lean();
+        } else {
+            // Assuming the GitHub ID is passed directly without the 'github-' prefix
+            user = await User.findOne({ email: `github-${id}` }).lean();
+        }
+        if (!user) {
+            throw new Error(`User not found with ID: ${id}`);
+        }
         return user;
     } catch (error) {
-        throw new Error("Failed to fetch user!");
+        console.error(`Error fetching user with ID ${id}:`, error);
+        throw new Error(`Failed to fetch user with ID ${id}: ${error.message}`);
     }
 };
 
