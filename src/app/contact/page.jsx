@@ -9,7 +9,7 @@ const page = () => {
             <div className="py-4 lg:py-8 px-4 mx-auto max-w-screen-md">
       <h2 class="mb-4 text-4xl text-slate-300 tracking-tight font-extrabold text-center text-gray-900 dark:text-white">Contact Us</h2>
       <p class="mb-8 lg:mb-16 font-light text-center text-zinc-300 dark:text-gray-400 text-xs sm:text-sm md:text-base lg:text-lg">
-  I'd love to hear from you! Feel free to reach out to me at placeparks@gmail.com.
+  I&apos;d love to hear from you! Feel free to reach out to me at placeparks@gmail.com.
   <br/>
   Thank you for stopping by, and I hope you enjoy your stay at Mirac.eth Blog!
 </p>
