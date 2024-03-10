@@ -107,6 +107,10 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         
         
       ],
+   pages: {
+    error: '/auth/error', // Override the error page
+    // ...
+  },
   callbacks: {
     async jwt({ token, user, account }) {
       await connectToMongo();
