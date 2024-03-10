@@ -108,7 +108,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         
       ],
    pages: {
-    error: '/auth/error', // Override the error page
+    error: '/app/auth/error', // Override the error page
     // ...
   },
   callbacks: {
