@@ -1,21 +1,18 @@
-"use client"
 import React from "react";
 import Image from "next/image";
-import { BackgroundGradient } from "../ui/background-gradient";
-import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import { TracingBeam } from "@/components/ui/tracing-beam";
+import Link from "next/link";
 
-const PostCard = ({ post }) => {
-  const handleReadMoreClick = (event) => {
-    event.preventDefault(); // Prevent the default link behavior
-    window.location.href = `/blog/${post.slug}`; // Set the location to the post URL
-  };
-
-  return (
+export const PostCard = ({ post }) => {
+    const handleReadMoreClick = (event) => {
+      event.preventDefault(); // Prevent the default link behavior
+      window.location.href = `/blog/${post.slug}`; // Set the location to the post URL
+    };
+    return (
     <TracingBeam className="px-6">
       <div className="max-w-2xl mx-auto antialiased pt-4 relative">
-          <div className="mb-10">
+          <div key={`content-${index}`} className="mb-10">
                     <h2 className="bg-black text-white rounded-full text-sm w-fit px-4 py-1 mb-4">
                     <Link href={`/blog/${post.slug}`}>
               <span onClick={handleReadMoreClick}>Read More</span>
@@ -40,6 +37,8 @@ const PostCard = ({ post }) => {
       </div>
     </TracingBeam>
   );
-};
+}
 
-export default PostCard;
+
+
+export default getPosts

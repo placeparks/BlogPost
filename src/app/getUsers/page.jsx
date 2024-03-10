@@ -5,7 +5,7 @@ const GetUsers = async () => {
     const users = await getUsers();
   return (
     <div className="flex flex-col mx-auto p-10 mt-20 justify-center items-center">
-      <h1 className="text-3xl font-semibold mb-6">Admin Panel - Manage Posts</h1>
+      <h1 className="text-3xl font-semibold mb-6">Manage Users</h1>
       <div className="overflow-x-auto">
         <table className="min-w-96 bg-white">
           <thead>
