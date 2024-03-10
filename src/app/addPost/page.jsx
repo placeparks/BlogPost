@@ -1,10 +1,12 @@
 "use client"
 import React, { useState } from 'react';
-import ReactQuill from 'react-quill';
+import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import { addPost } from "@/lib/action";
 import { useSession } from "next-auth/react";
 
+// Dynamically import ReactQuill with SSR disabled
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 const AddPost = () => {
   const [value, setValue] = useState('');
   const { data: session } = useSession(); // Use useSession to get the current session data

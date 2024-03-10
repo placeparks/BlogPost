@@ -1,26 +1,31 @@
 "use client"
 import { LockClosedIcon } from '@heroicons/react/solid'
-import { handleLogin, handleLoginWithGithub, handleLoginWithGoogle } from '@/lib/action';
+import { handleLoginWithGithub, handleLoginWithGoogle } from '@/lib/action';
 import { useRouter } from "next/navigation"
 import { signIn } from 'next-auth/react';
 
 export default function Login() {
-  const router = useRouter()
-  const handleSubmit = async e => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
+  const router = useRouter();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
     const response = await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
-      redirect: false
-    })
+      redirect: false,
+    });
 
-    console.log({ response })
     if (!response?.error) {
-      router.push("/")
-      router.refresh()
+      router.push("/");
+      router.refresh();
+    } else {
+      if (response.error === "CredentialsSignin") {
+        alert("Login failed. Please check your credentials or register if you don't have an account.");
+      } else {
+        alert("Login failed: " + response.error);
+      }
     }
-  }
+  };
 
   return (
     <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
