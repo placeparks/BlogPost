@@ -9,8 +9,7 @@ export default function Error({ error }) {
   );
 }
 
-// This gets called on every request
 export async function getServerSideProps(context) {
-  // Pass the error code to the page via props
+  console.log("Error from context:", context.query.error);
   return { props: { error: context.query.error } };
 }
