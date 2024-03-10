@@ -7,7 +7,7 @@ const nextConfig = {
     serverActions: true,
   },
       env: {
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+  NEXTAUTH_URL: 'https://blog-post-self.vercel.app',
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
       },
