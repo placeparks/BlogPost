@@ -37,7 +37,7 @@ const content = [
     "My journey into blogging began as a creative outlet to document my life and share my experiences with others. Over time, it has evolved into a platform where I can connect with a community of like-minded individuals and share my knowledge and insights on topics that matter to me.",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] flex items-center justify-center text-white">
-        Why I Started This Blog"
+        Why I Started This Blog
       </div>
     ),
   },
