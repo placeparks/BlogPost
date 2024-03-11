@@ -1,8 +1,9 @@
 "use client"
 import { LockClosedIcon } from '@heroicons/react/solid';
-import { handleLoginWithGithub, handleLoginWithGoogle, handleRegister } from '@/lib/action';
+import { handleRegister } from '@/lib/action';
 import { useRef } from 'react';
 import { useRouter } from "next/navigation"
+import { signIn } from 'next-auth/react';
 
 export default function Register() {
   const formRef = useRef(null);
@@ -120,24 +121,22 @@ export default function Register() {
             Sign up
           </button>
         </form>
-        <form action={handleLoginWithGithub}>
-          <button className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <button
+             onClick={() => signIn('github', { callbackUrl: '/blog' })} 
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             <span className="absolute left-0 inset-y-0 flex items-center pl-3">
               <LockClosedIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
             </span>
             Signup with GitHub
           </button>
-        </form>
-        <form action={handleLoginWithGoogle}>
-        <button className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
+        <button
+           onClick={() => signIn('google', { callbackUrl: '/blog' })} 
+          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-            <LockClosedIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
+              <LockClosedIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
             </span>
-
-              Signup with Google
-        </button>
-        </form>
+            Signup with Google
+          </button>
       </div>
     </div>
   );
