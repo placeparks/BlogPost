@@ -13,7 +13,7 @@ const getData = async () => {
 const Blog = async () => {
   const posts = await getPosts();
   return (
- <div className="flex flex-wrap -mx-2 p-14">
+ <div className="flex flex-wrap -mx-2 p-14 bg-zinc-200">
   {posts.map((post) => (
     <PostCard key={post.id} post={post} />
   ))}
