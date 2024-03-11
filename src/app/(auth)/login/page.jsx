@@ -16,7 +16,7 @@ export default function Login() {
     });
 
     if (!response?.error) {
-      router.push("/");
+      router.push("/blog");
       router.refresh();
     } else {
       if (response.error === "CredentialsSignin") {
