@@ -135,7 +135,7 @@ export default function Register() {
             <LockClosedIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
             </span>
 
-              Login with Google
+              Signup with Google
         </button>
         </form>
       </div>
