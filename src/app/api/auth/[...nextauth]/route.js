@@ -43,10 +43,8 @@ async function handleGitHubSignIn(profile, accessToken) {
   return true;
 }
 
-  
-async function handleGoogleSignIn(profile, token) {
+async function handleGoogleSignIn(profile) {
   try {
-    await connectToMongo();
     const existingUser = await User.findOne({ email: profile.email });
     if (!existingUser) {
       const newUser = new User({
@@ -56,9 +54,6 @@ async function handleGoogleSignIn(profile, token) {
         isAdmin: false,
       });
       await newUser.save();
-      token.id = newUser._id; // Set token ID for the new user
-    } else {
-      token.id = existingUser._id; // Set token ID for the existing user
     }
   } catch (error) {
     console.log(error);
@@ -68,7 +63,7 @@ async function handleGoogleSignIn(profile, token) {
   return true;
 }
 
-console.log(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
+
 export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
     providers: [
         GitHub({
@@ -122,7 +117,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
           if (account.provider === "github") {
             return handleGitHubSignIn(profile, account.accessToken);
           } else if (account.provider === "google") {
-            return handleGoogleSignIn(profile, token);
+            return handleGoogleSignIn(profile);
           }
       
           return true; 
