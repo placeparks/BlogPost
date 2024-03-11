@@ -68,7 +68,7 @@ async function handleGoogleSignIn(profile, token) {
   return true;
 }
 
-
+console.log(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
 export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
     providers: [
         GitHub({
