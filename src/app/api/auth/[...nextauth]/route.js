@@ -44,25 +44,30 @@ async function handleGitHubSignIn(profile, accessToken) {
 }
 
   
-  async function handleGoogleSignIn(profile) {
-    try {
-      const existingUser = await User.findOne({ email: profile.email });
-      if (!existingUser) {
-        const newUser = new User({
-          username: profile.name,
-          email: profile.email,
-          image: profile.picture,
-          isAdmin: false,
-        });
-        await newUser.save();
-      }
-    } catch (error) {
-      console.log(error);
-      return false;
+async function handleGoogleSignIn(profile, token) {
+  try {
+    await connectToMongo();
+    const existingUser = await User.findOne({ email: profile.email });
+    if (!existingUser) {
+      const newUser = new User({
+        username: profile.name,
+        email: profile.email,
+        image: profile.picture,
+        isAdmin: false,
+      });
+      await newUser.save();
+      token.id = newUser._id; // Set token ID for the new user
+    } else {
+      token.id = existingUser._id; // Set token ID for the existing user
     }
-  
-    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
   }
+
+  return true;
+}
+
 
 export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
     providers: [
@@ -108,48 +113,47 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         
       ],
    pages: {
-    error: '/auth/error', // Override the error page
-    // ...
+    error: '/auth/error',
   },
   callbacks: {
-    async jwt({ token, user, account }) {
-      await connectToMongo();
-      // Check if it's a sign-in event
-      if (account && user) {
-        let userEmail = user.email;
-        // If the sign-in is from GitHub, construct the unique email ID
-        if (account.provider === "github") {
-          userEmail = `github-${user.id}`;
-        }
-        if (user) {
-          token.id = user.id;
-        }
-        // Fetch the user from the database using the determined email or unique identifier
-        const dbUser = await User.findOne({ email: userEmail }).lean();
-        // Set isAdmin from the database record
-        token.isAdmin = dbUser?.isAdmin ?? false;
-      }
-  
-      return token;
-    },
     
-    async session({ session, token }) {
-      // Transfer isAdmin to the session
-      session.user.isAdmin = token.isAdmin;
-      session.user.id = token.id;
-      return session;
-    },
         async signIn({ user, account, profile }) {
           await connectToMongo();
           if (account.provider === "github") {
             return handleGitHubSignIn(profile, account.accessToken);
           } else if (account.provider === "google") {
-            return handleGoogleSignIn(profile);
+            return handleGoogleSignIn(profile, token);
           }
       
           return true; 
         },     
-      
+        async jwt({ token, user, account }) {
+            await connectToMongo();
+            // Check if it's a sign-in event
+            if (account && user) {
+                let userEmail = user.email;
+                // If the sign-in is from GitHub, construct the unique email ID
+                if (account.provider === "github") {
+                    userEmail = `github-${user.id}`;
+                }
+                if (user) {
+                    token.id = user.id;
+                }
+                // Fetch the user from the database using the determined email or unique identifier
+                const dbUser = await User.findOne({ email: userEmail }).lean();
+                // Set isAdmin from the database record
+                token.isAdmin = dbUser?.isAdmin ?? false;
+            }
+        
+            return token;
+        },
+          
+        async session({ session, token }) {
+            // Transfer isAdmin to the session
+            session.user.isAdmin = token.isAdmin;
+            session.user.id = token.id;
+            return session;
+        },
       },
       
     });
