@@ -16,14 +16,25 @@ export default function Login() {
     });
 
     if (!response?.error) {
+      alert("Login Successful")
       router.push("/blog");
-      router.refresh();
     } else {
       if (response.error === "CredentialsSignin") {
         alert("Login failed. Please check your credentials or register if you don't have an account.");
       } else {
         alert("Login failed: " + response.error);
       }
+    }
+  };
+
+  const handleOAuthSignIn = async (provider) => {
+    const res = await signIn(provider, { redirect: false });
+    if (!res.error) {
+      // No error, redirect to the blog page
+      router.push('/blog');
+    } else {
+      // Handle errors (e.g., display a message)
+      alert(`Login with ${provider} failed: ${res.error}`);
     }
   };
 
@@ -112,10 +123,9 @@ export default function Login() {
             </button>
           </div>
         </form>
-         <button
+        <button
   type="button"
-  onClick={() => handleLoginWithGithub().then(() => router.push('/blog'))}
-  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+  onClick={() => signIn('github', { callbackUrl: '/blog' })}  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 >
             <span className="absolute left-0 inset-y-0 flex items-center pl-3">
             <LockClosedIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
@@ -125,8 +135,7 @@ export default function Login() {
         </button>
         <button
   type="button"
-  onClick={() => handleLoginWithGoogle().then(() => router.push('/blog'))}
-  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+  onClick={() => signIn('google', { callbackUrl: '/blog' })}  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 >
             <span className="absolute left-0 inset-y-0 flex items-center pl-3">
             <LockClosedIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
